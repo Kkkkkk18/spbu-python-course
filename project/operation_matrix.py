@@ -1,18 +1,28 @@
 from typing import List
 
+
 def add(A: List[List[float]], B: List[List[float]]) -> List[List[float]]:
-
     """
-    Add two matrices
+    Add two matrices.
 
-    A = the first matrix
-    B = the second matrix
+    Parameters:
+    ----------
+    A : List[List[float]]
+        The first matrix.
+    B : List[List[float]]
+        The second matrix.
 
-    Return -> matrix addition
+    Returns:
+    -------
+    List[List[float]]
+        The resulting matrix after addition.
 
-    ValueError = matrices of different dimensions
+    Raises:
+    ------
+    ValueError
+        If the matrices have different dimensions.
     """
-    
+
     if len(A) != len(B) or len(A[0]) != len(B[0]):
         raise ValueError("!Matrices have different dimensions!")
 
@@ -22,20 +32,29 @@ def add(A: List[List[float]], B: List[List[float]]) -> List[List[float]]:
             res[i][j] = A[i][j] + B[i][j]
     return res
 
+
 def mul(A: List[List[float]], B: List[List[float]]) -> List[List[float]]:
-
     """
-    Multiply two matrices
+    Multiply two matrices.
 
-    A = the first  matrix
-    B = the second matrix
+    Parameters:
+    ----------
+    A : List[List[float]]
+        The first matrix.
+    B : List[List[float]]
+        The second matrix.
 
-    Returns -> matrix multiplication 
+    Returns:
+    -------
+    List[List[float]]
+        The resulting matrix after multiplication.
 
-    ValueError = the number of columns in the first matrix don't match the number of rows in the second matrix.
-        
+    Raises:
+    ------
+    ValueError
+        If the number of columns in the first matrix does not match the number of rows in the second matrix.
     """
-    
+
     if len(A[0]) != len(B):
         raise ValueError("!Matrices cannot be multiplied!")
 
@@ -48,15 +67,20 @@ def mul(A: List[List[float]], B: List[List[float]]) -> List[List[float]]:
 
     return res
 
+
 def transpose(A: List[List[float]]) -> List[List[float]]:
-
     """
-    Transpose a matrix
+    Transpose a matrix.
 
-    A = The  matrix 
+    Parameters:
+    ----------
+    A : List[List[float]]
+        The matrix to be transposed.
 
-    Returns ->  matrix transposition
-    
+    Returns:
+    -------
+    List[List[float]]
+        The transposed matrix.
     """
 
     res = [[0.0] * len(A) for i in range(len(A[0]))]
