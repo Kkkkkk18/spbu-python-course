@@ -23,7 +23,7 @@ def test_uncurry_basic_mul():
     """
 
     f1 = curry_explicit(lambda x, y, z: x * y * z, 3)
-    f2 = uncurry_explicit(f1, 2)
+    f2 = uncurry_explicit(f1, 3)
     assert f2(3, 2, 1) == 6
 
 

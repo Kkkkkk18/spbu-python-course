@@ -3,12 +3,26 @@ from functools import wraps
 
 
 def cache_results(max_results=0):
+
+    """
+    A decorator to cache the results of a function.
+
+    Parameters:
+    max_results (int): The maximum number of results to store in the cache.
+                      If max_results is 0, the cache will be unlimited.
+
+    Returns:
+    function: A decorator that can be applied to a function to cache its results.
+
+    """
+
     def decorator(func):
 
         cache = OrderedDict()
 
+        @wraps(func)
         def wrapper(*args, **kwargs):
-            key = (args, tuple(sorted(kwargs.items())))
+            key = (tuple(args), frozenset(kwargs.items()))
             if key in cache:
                 return cache[key]
             result = func(*args, **kwargs)
@@ -21,8 +35,3 @@ def cache_results(max_results=0):
         return wrapper
 
     return decorator
-
-
-@cache_results(max_results=2)
-def add(x, y):
-    return x + y
