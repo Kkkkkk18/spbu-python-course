@@ -27,9 +27,9 @@ def test_cache_error():
     Test the behavior of a function without caching.
 
     """
-    res_1 = add(1)
-    assert res_1 == 1
-    res_2 = add(1)
+    res_1 = add(1, 2)
+    assert res_1 == 3
+    res_2 = add(1, 2)
     assert res_2 == res_1  # the result is already in the cache
 
 
