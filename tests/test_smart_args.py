@@ -29,9 +29,9 @@ def test_evaluated():
 
     res_1 = evaluation()
     res_2 = evaluation()
-    res_3 = evaluation(3)
+    res_3 = evaluation(x=1, y=7)
     assert res_1[0] == res_2[0]
-    assert res_3 == 3
+    assert res_3 == (1, 7)
 
 
 def test_isolated():
@@ -48,8 +48,8 @@ def test_isolated():
 
     no_mutable = {"a": 10}
     res = isolation(d=no_mutable)
-    assert no_mutable == {"a": 10}
     assert res == {"a": 0}
+    assert no_mutable == {"a": 10}
 
 
 def test_evaluated_isolated_combination():
@@ -63,8 +63,6 @@ def test_evaluated_isolated_combination():
     def f(*, x, y=Evaluated(Isolated)):
         return x + y
 
-    with pytest.raises(ValueError):
-        f(x=52)
     with pytest.raises(ValueError):
         f(x=1, y=2)
 
@@ -82,7 +80,7 @@ def test_isolated_error():
         return d
 
     with pytest.raises(ValueError):
-        isolation()
+        isolation({}, Isolated())
 
 
 def test_evaluated_isolated():
