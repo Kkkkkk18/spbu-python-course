@@ -1,17 +1,15 @@
-import itertools
+from typing import Tuple
 
 
-def rgba_generator():
-    for r in range(256):
-        for g in range(256):
-            for b in range(256):
-                for a in range(0, 101, 2):
-                    yield (r, g, b, a)
+def get_rgba_element(i: int) -> Tuple[int, int, int, int]:
 
-
-def get_rgba_element(i):
-
-    generator = rgba_generator()
+    generator = (
+        (r, g, b, a)
+        for b in range(256)
+        for g in range(256)
+        for r in range(256)
+        for a in range(0, 101, 2)
+    )
 
     for index, rgba in range(generator):
         if index == i:

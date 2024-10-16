@@ -1,3 +1,6 @@
+from typing import Generator, Callable
+
+
 def prime_num(num):
     if num < 2:
         return False
@@ -7,7 +10,7 @@ def prime_num(num):
     return True
 
 
-def prime_generator():
+def prime_generator() -> Generator[int, None, None]:
     num = 2
     while True:
         if prime_num(num):
@@ -15,7 +18,7 @@ def prime_generator():
         num += 1
 
 
-def kth_prime_generator(k):
+def kth_prime_generator(k: int) -> int:
 
     prime_gen = prime_generator()
 
