@@ -80,9 +80,8 @@ def smart_args(func):
         """
 
         new_kwargs = {}
-
+        isIsol, isEval = False, False
         assert all(not isinstance(arg, (Evaluated, Isolated)) for arg in args)
-        assert all(not isinstance(kwargs[key], (Evaluated, Isolated)) for key in kwargs)
 
         for arg_name, arg_value in param.items():
             if arg_name in kwargs and not isinstance(
@@ -90,6 +89,7 @@ def smart_args(func):
             ):
                 new_kwargs[arg_name] = kwargs[arg_name]
             elif isinstance(arg_value.default, Evaluated):
+                isEval = True
                 d_value = arg_value.default.func
                 if d_value == Isolated:
                     raise ValueError("Isolated is an argument for Evaluated.")
@@ -99,11 +99,13 @@ def smart_args(func):
                     new_kwargs[arg_name] = d_value()
             elif isinstance(arg_value.default, Isolated):
                 if arg_name in kwargs:
+                    isIsol = True
                     new_kwargs[arg_name] = copy.deepcopy(kwargs[arg_name])
                 else:
                     raise ValueError(
                         f"Argument '{arg_name}' must be provided correctly"
                     )
+            assert not (isIsol and isEval)
         return func(*args, **new_kwargs)
 
     return wrapper

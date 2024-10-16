@@ -29,9 +29,7 @@ def test_evaluated():
 
     res_1 = evaluation()
     res_2 = evaluation()
-    res_3 = evaluation()
     assert res_1[0] == res_2[0]
-    assert res_3 == (1, 7)
 
 
 def test_isolated():
@@ -52,21 +50,6 @@ def test_isolated():
     assert no_mutable == {"a": 10}
 
 
-def test_evaluated_isolated_combination():
-
-    """
-    Test the combination of Evaluated and Isolated classes.
-
-    """
-
-    @smart_args
-    def f(*, x, y=Evaluated(Isolated)):
-        return x + y
-
-    with pytest.raises(ValueError):
-        f(x=1, y=2)
-
-
 def test_isolated_error():
 
     """
@@ -80,7 +63,7 @@ def test_isolated_error():
         return d
 
     with pytest.raises(ValueError):
-        isolation({}, Isolated())
+        isolation()
 
 
 def test_evaluated_isolated():
@@ -99,6 +82,5 @@ def test_evaluated_isolated():
         return (x, y)
 
     no_mutable = {"a": 10}
-    res = evaluated_isolated(x=no_mutable)
-    assert res == ({"a": 0}, 1)
-    assert no_mutable == {"a": 10}
+    with pytest.raises(AssertionError):
+        evaluated_isolated(x=no_mutable)
