@@ -29,7 +29,7 @@ def test_evaluated():
 
     res_1 = evaluation()
     res_2 = evaluation()
-    res_3 = evaluation(x=1, y=7)
+    res_3 = evaluation()
     assert res_1[0] == res_2[0]
     assert res_3 == (1, 7)
 

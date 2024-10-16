@@ -85,24 +85,25 @@ def smart_args(func):
         assert all(not isinstance(kwargs[key], (Evaluated, Isolated)) for key in kwargs)
 
         for arg_name, arg_value in param.items():
-            if arg_name in kwargs:
-                if arg_name not in isinstance(arg_value.default, (Evaluated, Isolated)):
+            if arg_name in kwargs and not isinstance(
+                arg_value.default, (Isolated, Evaluated)
+            ):
+                new_kwargs[arg_name] = kwargs[arg_name]
+            elif isinstance(arg_value.default, Evaluated):
+                d_value = arg_value.default.func
+                if d_value == Isolated:
+                    raise ValueError("Isolated is an argument for Evaluated.")
+                if arg_name in kwargs:
                     new_kwargs[arg_name] = kwargs[arg_name]
-                elif isinstance(arg_value.default, Evaluated):
-                    d_value = arg_value.default.func
-                    if d_value == Isolated:
-                        raise ValueError("Isolated is an argument for Evaluated.")
-                    if arg_name in kwargs:
-                        new_kwargs[arg_name] = kwargs[arg_name]
-                    else:
-                        new_kwargs[arg_name] = d_value()
-                elif isinstance(arg_value.default, Isolated):
-                    if arg_name in kwargs:
-                        new_kwargs[arg_name] = copy.deepcopy(kwargs[arg_name])
-                    else:
-                        raise ValueError(
-                            f"Argument '{arg_name}' must be provided correctly"
-                        )
+                else:
+                    new_kwargs[arg_name] = d_value()
+            elif isinstance(arg_value.default, Isolated):
+                if arg_name in kwargs:
+                    new_kwargs[arg_name] = copy.deepcopy(kwargs[arg_name])
+                else:
+                    raise ValueError(
+                        f"Argument '{arg_name}' must be provided correctly"
+                    )
         return func(*args, **new_kwargs)
 
     return wrapper
