@@ -15,17 +15,13 @@ def prime_generator():
         num += 1
 
 
-def kth_prime_generator(func):
+def kth_prime_generator(k):
 
-    prime_gen = func()
+    prime_gen = prime_generator()
+    prime = 0
+    for _ in range(k):
+        prime = next(prime_gen)
+    return prime
 
-    def wrapper(k):
 
-        prime = 0
-
-        for _ in range(k):
-
-            prime = next(prime_gen)
-        return prime
-
-    return wrapper
+s

@@ -1,19 +1,19 @@
-from typing import Tuple
-
-
-def get_rgba_element(i: int) -> Tuple[int, int, int, int]:
-
-    generator = (
+def rgba_generator():
+    return (
         (r, g, b, a)
-        for b in range(256)
-        for g in range(256)
         for r in range(256)
-        for a in range(0, 101, 2)
+        for g in range(256)
+        for b in range(256)
+        for a in range(101)
+        if a % 2 == 0
     )
-    try:
 
-        for index, rgba in range(generator):
-            if index == i:
-                return rgba
-    except Exception:
-        raise ValueError("!does not find the index!")
+
+def get_rgba_element(i):
+
+    assert i > 0
+    generator = rgba_generator()
+    s = 0
+    for index in range(i):
+        s = next(generator)
+    return s
