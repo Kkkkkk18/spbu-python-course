@@ -10,9 +10,10 @@ def get_rgba_element(i: int) -> Tuple[int, int, int, int]:
         for r in range(256)
         for a in range(0, 101, 2)
     )
+    try:
 
-    for index, rgba in range(generator):
-        if index == i:
-            return rgba
-
-    raise ValueError("!does not find the index!")
+        for index, rgba in range(generator):
+            if index == i:
+                return rgba
+    except Exception:
+        raise ValueError("!does not find the index!")
