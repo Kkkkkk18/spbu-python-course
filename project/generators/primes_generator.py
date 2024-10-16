@@ -22,6 +22,3 @@ def kth_prime_generator(k):
     for _ in range(k):
         prime = next(prime_gen)
     return prime
-
-
-s
