@@ -30,8 +30,5 @@ def test_prime_generator(num_prime, expected_prime):
     ],
 )
 def test_get_kth_prime(k, expected_prime):
-    @kth_prime_generator
-    def prime_gen():
-        return prime_generator()
 
-    assert prime_gen(k) == expected_prime
+    assert kth_prime_generator(k) == expected_prime

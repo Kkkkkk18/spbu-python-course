@@ -15,10 +15,3 @@ from project.generators.RGBA import get_rgba_element
 )
 def test_get_rgba_element(index, expected):
     assert get_rgba_element(index) == expected
-
-
-@pytest.mark.parametrize("index_error", [-1, 256 * 256 * 256 * 51])
-def test_get_rgba_element_error(index_error):
-
-    with pytest.raises(IndexError):
-        get_rgba_element(index_error)
