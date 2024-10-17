@@ -17,6 +17,7 @@ def prime_generator():
 
 def kth_prime_generator(k):
 
+    assert k > 0
     prime_gen = prime_generator()
     prime = 0
     for _ in range(k):

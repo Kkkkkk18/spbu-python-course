@@ -32,3 +32,10 @@ def test_prime_generator(num_prime, expected_prime):
 def test_get_kth_prime(k, expected_prime):
 
     assert kth_prime_generator(k) == expected_prime
+
+
+def test_get_kth_prime_error():
+    with pytest.raises(AssertionError):
+        kth_prime_generator(0)
+    with pytest.raises(AssertionError):
+        kth_prime_generator(-1)
