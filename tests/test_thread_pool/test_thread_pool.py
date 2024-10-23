@@ -6,11 +6,23 @@ from project.thread_pool.thread_pool import ThreadPool
 
 def sample_task(x):
 
+    """
+    A sample task function that simulates a task by sleeping for 1 second and printing a completion message.
+
+    """
+
     time.sleep(1)
     print(f"The task {x} is completed")
 
 
 def test_enqueue():
+
+    """
+    Test the enqueue method of the ThreadPool class.
+
+    This test creates a ThreadPool with 3 threads, enqueues 4 tasks, and checks if all tasks are executed.
+    """
+
     pool = ThreadPool(3)
 
     tasks_executed = []
@@ -31,6 +43,13 @@ def test_enqueue():
 
 def test_dispose():
 
+    """
+    Test the dispose method of the ThreadPool class.
+
+    This test creates a ThreadPool with 5 threads, enqueues a sample task, disposes the pool,
+    and checks if all threads are completed.
+    """
+
     pool = ThreadPool(5)
 
     pool.enqueue(sample_task)
@@ -43,14 +62,27 @@ def test_dispose():
 
 def test_thread_pool():
 
+    """
+    Test the initialization of the ThreadPool class.
+
+    This test creates a ThreadPool with 6 threads and checks if the correct number of threads are created.
+    """
+
     pool = ThreadPool(6)
 
-    assert len(pool.threads) == 6, f"Expected 5 threads, found {len(pool.threads)}"
+    assert len(pool.threads) == 6, f"!expected 6 threads, found {len(pool.threads)}!"
 
     pool.dispose()
 
 
 def test_active_thread():
+
+    """
+    Test the active thread count after creating a ThreadPool.
+
+    This test creates a ThreadPool with 7 threads, waits for a short period, and checks if the correct number
+    of active threads are present.
+    """
 
     active_threads = threading.active_count()
     pool = ThreadPool(7)
@@ -63,4 +95,4 @@ def test_active_thread():
 
     assert (
         res_active_threads == 7
-    ), f"Expected 7 active threads, found {res_active_threads}"
+    ), f"!expected 7 active threads, found {res_active_threads}!"
