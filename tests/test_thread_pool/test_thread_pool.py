@@ -38,7 +38,7 @@ def test_enqueue():
 
     assert (
         len(tasks_executed) == 4
-    ), f"Expected 5 tasks completed, got {len(tasks_executed)}"
+    ), f"!expected 4 tasks completed, got {len(tasks_executed)}!"
 
 
 def test_dispose():
@@ -96,3 +96,34 @@ def test_active_thread():
     assert (
         res_active_threads == 7
     ), f"!expected 7 active threads, found {res_active_threads}!"
+
+
+def test_add_tasks_to_threadpool_after_n_tasks_finished():
+
+    n = 8
+    tasks_executed = []
+
+    def ex_task(x):
+        tasks_executed.append(x)
+
+    pool = ThreadPool(n)
+
+    for i in range(n):
+        pool.enqueue(lambda i=i: ex_task(i))
+
+    time.sleep(1)
+
+    assert (
+        len(tasks_executed) == 8
+    ), f"!expected 8 tasks completed, got {len(tasks_executed)}!"
+
+    for i in range(n, n * 2):
+        pool.enqueue(lambda i=i: ex_task(i))
+
+    time.sleep(1)
+
+    assert (
+        len(tasks_executed) == 16
+    ), f"!expected 16 tasks completed, got {len(tasks_executed)}!"
+
+    pool.dispose()
