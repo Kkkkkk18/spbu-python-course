@@ -98,7 +98,7 @@ def test_active_thread():
     ), f"!expected 7 active threads, found {res_active_threads}!"
 
 
-def test_add_tasks_to_threadpool_after_n_tasks_finished():
+def test_add_tasks_to_thread_pool_after_n_tasks_finished():
 
     n = 8
     tasks_executed = []

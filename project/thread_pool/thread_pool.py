@@ -1,4 +1,5 @@
 import threading
+from typing import Callable
 
 
 class ThreadPool:
@@ -33,7 +34,7 @@ class ThreadPool:
 
     """
 
-    def __init__(self, num_threads):
+    def __init__(self, num_threads: Callable) -> None:
 
         """
         Initializes the ThreadPool with a specified number of threads.
@@ -55,7 +56,7 @@ class ThreadPool:
             thread.start()
             self.threads.append(thread)
 
-    def worker(self):
+    def worker(self) -> None:
 
         """
         Initializes the ThreadPool with a specified number of threads.
@@ -76,7 +77,7 @@ class ThreadPool:
 
             task()
 
-    def enqueue(self, task):
+    def enqueue(self, task: Callable) -> None:
 
         """
         Adds a task to the task queue.
@@ -89,7 +90,7 @@ class ThreadPool:
             self.tasks.append(task)
             self.condition.notify()
 
-    def dispose(self):
+    def dispose(self) -> None:
 
         """
         Stops the thread pool and waits for all threads to finish.
