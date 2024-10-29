@@ -1,5 +1,5 @@
 import threading
-from typing import Callable
+from typing import Callable, List
 
 
 class ThreadPool:
@@ -34,7 +34,7 @@ class ThreadPool:
 
     """
 
-    def __init__(self, num_threads: Callable) -> None:
+    def __init__(self, num_threads: int) -> None:
 
         """
         Initializes the ThreadPool with a specified number of threads.
@@ -44,8 +44,8 @@ class ThreadPool:
         """
 
         self.num_threads: int = num_threads
-        self.tasks = []
-        self.threads = []
+        self.tasks: List[Callable | None] = []
+        self.threads: List[threading.Thread] = []
         self.lock = threading.Lock()
         self.condition = threading.Condition(self.lock)
         self.stop = False

@@ -23,7 +23,8 @@ def test_enqueue():
     This test creates a ThreadPool with 3 threads, enqueues 4 tasks, and checks if all tasks are executed.
     """
 
-    pool = ThreadPool(3)
+    num_threads = 3
+    pool = ThreadPool(num_threads)
 
     tasks_executed = []
 
@@ -49,8 +50,8 @@ def test_dispose():
     This test creates a ThreadPool with 5 threads, enqueues a sample task, disposes the pool,
     and checks if all threads are completed.
     """
-
-    pool = ThreadPool(5)
+    num_threads = 5
+    pool = ThreadPool(num_threads)
 
     pool.enqueue(sample_task)
     pool.dispose()
