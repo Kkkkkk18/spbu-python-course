@@ -1,3 +1,6 @@
+from functools import wraps
+
+
 def curry_explicit(function, arity):
 
     """
@@ -22,11 +25,19 @@ def curry_explicit(function, arity):
     if arity == 0:
         return function
 
+    numargs = 0
+
+    @wraps(function)
     def curried(*args):
+        nonlocal numargs
+        if numargs != len(args) - 1:
+            raise TypeError(f"Expected 1 argument")
+        numargs += 1
+
         if len(args) == arity:
             return function(*args)
-        elif len(args) > arity:
-            raise TypeError(f"Expected {arity} arguments, received {len(args)}")
-        return lambda *new_args: curried(*(args + new_args))
+        if len(args) < arity:
+            return lambda arg: curried(*(args + (arg,)))
+        raise TypeError(f"Expected exactly {arity} arguments, but got {len(args)}")
 
     return curried
