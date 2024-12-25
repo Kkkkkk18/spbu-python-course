@@ -39,6 +39,6 @@ def get_rgba_element(i):
     assert i > 0
     generator = rgba_generator()
     s = 0
-    for index in range(i):
+    for _ in range(i):
         s = next(generator)
     return s
