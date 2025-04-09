@@ -14,9 +14,9 @@ class ColorTypes(Enum):
         Green : str
     """
 
-    Black: str = "black"
-    Red: str = "red"
-    Green: str = "green"
+    Black = "black"
+    Red = "red"
+    Green = "green"
 
 
 class BetTypes(Enum):
@@ -29,9 +29,9 @@ class BetTypes(Enum):
         Dozen : int
     """
 
-    Single: int = 36
-    Color: int = 2
-    Dozen: int = 3
+    Single = 36
+    Color = 2
+    Dozen = 3
 
 
 @dataclass
