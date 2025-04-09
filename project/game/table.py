@@ -1,41 +1,59 @@
-from project.game.players import Bot, Croupier
+import random
+from project.game.bet import ColorTypes
+from dataclasses import dataclass
+
+
+@dataclass
+class Pocket:
+    """
+    Data class that implements a pocket on a roulette wheel.
+
+    Attributes
+    ----------
+    num : int
+        The number in the pocket. Default is 0.
+    color : ColorTypes
+        The color of the pocket. Default is ColorTypes.Green.
+    """
+
+    num: int = 0
+    color: ColorTypes = ColorTypes.Green
 
 
 class RouletteTable:
     """
-    The RouletteTable class represents a roulette table where the game is played.
-    It manages the croupier and facilitates the gameplay for a bot.
+    Represents a roulette table with a wheel of pockets.
 
-    Attributes:
-        croupier (Croupier): The croupier handling the roulette wheel.
-
-    Methods:
-        __init__(): Initializes the roulette table with a croupier.
-        play_game(bot: Bot) -> None: Simulates a game of roulette with the given bot.
+    Attributes
+    ----------
+    _pockets_num : int
+        The number of pockets on the roulette wheel.
+    _pockets : List[Pocket]
+        A list of Pocket objects representing the pockets on the wheel.
     """
 
     def __init__(self):
-        """
-        The RouletteTable class represents a roulette table where the game is played.
-        It manages the croupier and facilitates the gameplay for a bot.
+        """Initialize the roulette table and set appropriate values to pockets on the wheel."""
+        self._pockets_num = 37
+        self._pockets = [Pocket()]
 
-        Attributes:
-            croupier (Croupier): The croupier handling the roulette wheel.
+        numbers_of_same_color = (10, 18, 28)
 
-        Methods:
-            __init__(): Initializes the roulette table with a croupier.
-            play_game(bot: Bot) -> None: Simulates a game of roulette with the given bot.
-        """
-        self.croupier = Croupier()
+        flag = True
+        for i in range(1, self._pockets_num):
+            if flag:
+                self._pockets.append(Pocket(i, ColorTypes.Red))
+            else:
+                self._pockets.append(Pocket(i, ColorTypes.Black))
 
-    def play_game(self, bot: Bot) -> None:
-        """
-        Simulates a game of roulette with the given bot.
+            if i not in numbers_of_same_color:
+                flag = not flag
 
-        Args:
-            bot (Bot): The bot playing the game.
-        """
-        print(f"The player {bot.name} starts the game with a balance {bot.balance}.")
-        bot.play(self.croupier)
-        winning_number, winning_color = self.croupier.spin_wheel()
-        print(f"The number dropped out: {winning_number} ({winning_color})")
+    @property
+    def pockets_num(self) -> int:
+        """Return number of pockets in wheel"""
+        return self._pockets_num
+
+    def spin(self) -> Pocket:
+        """Simulate spinning the wheel and return the winning pocket."""
+        return random.choice(self._pockets)

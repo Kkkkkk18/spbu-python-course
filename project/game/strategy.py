@@ -1,133 +1,189 @@
 import random
-from typing import Optional
-from project.game.players import Bot, Bet, Croupier
+from abc import ABC, abstractmethod
+from typing import List
+from project.game.bet import Bet, BetTypes, ColorTypes
 
 
-class AggressiveStrategy(Bot):
+class Strategy(ABC):
     """
-    The AggressiveStrategy class represents a bot that uses an aggressive betting strategy in the roulette game.
-    This strategy involves betting on a specific number.
+    Abstract class that defines the interface for a roulette playing strategy.
 
-    Methods:
-        place_bet() -> Optional[Bet]: Places a bet on a specific number.
-        play(croupier: Croupier) -> None: Simulates the bot playing a round of roulette using the aggressive strategy.
-    """
-
-    def place_bet(self) -> Optional[Bet]:
-        """
-        Places a bet on a specific number.
-
-        Returns:
-            Optional[Bet]: The bet placed by the bot, or None if the bot has insufficient balance.
-        """
-        if self.balance <= 0:
-            return None
-        choice = random.randint(0, 36)
-        amount = min(self.balance, 10)
-        return Bet(amount, "number", choice)
-
-    def play(self, croupier: Croupier) -> None:
-        """
-        Simulates the bot playing a round of roulette using the aggressive strategy.
-
-        Args:
-            croupier (Croupier): The croupier handling the roulette wheel.
-        """
-        bet = self.place_bet()
-        if bet:
-            print(f"{self.name} bets {bet.amount} on the number {bet.choice}")
-            winning_number, _ = croupier.spin_wheel()
-            if winning_number == bet.choice:
-                print(f"{self.name} won on the number {winning_number}!")
-                self.update_balance(bet.amount * 36)
-            else:
-                print(f"{self.name} lost. Result: {winning_number}")
-                self.update_balance(-bet.amount)
-
-
-class BasicStrategy(Bot):
-    """
-    The BasicStrategy class represents a bot that uses a basic betting strategy in the roulette game.
-    This strategy involves betting on a color (red or black).
-
-    Methods:
-        place_bet() -> Optional[Bet]: Places a bet on a color.
-        play(croupier: Croupier) -> None: Simulates the bot playing a round of roulette using the basic strategy.
+    Methods
+    -------
+    make_bet(balance: int, min_bet: int, max_bet: int, pockets_num: int, last: bool = False) -> Bet
+        Abstract method to be implemented by subclasses to define the betting strategy.
     """
 
-    def place_bet(self) -> Optional[Bet]:
+    @abstractmethod
+    def make_bet(
+        self,
+        balance: int,
+        min_bet: int,
+        max_bet: int,
+        pockets_num: int,
+        last: bool = False,
+    ) -> Bet:
         """
-        Places a bet on a color.
+        Make a bet based on the current game state.
 
-        Returns:
-            Optional[Bet]: The bet placed by the bot, or None if the bot has insufficient balance.
+        Parameters
+        ----------
+        balance : int
+            The amount of money left.
+        min_bet : int
+            The minimum bet amount.
+        max_bet : int
+            The maximum bet amount.
+        pockets_num : int
+            The number of pockets on the roulette wheel.
+        last : bool, optional
+            True if the last bet won, default is False.
+
+        Returns
+        -------
+        Bet
+            A Bet object representing the bet to be placed.
         """
-        if self.balance <= 0:
-            return None
-        choice = random.choice(["red", "black"])
-        amount = min(self.balance, 10)
-        return Bet(amount, "color", choice)
+        pass
 
-    def play(self, croupier: Croupier) -> None:
+
+class AggressiveStrategy(Strategy):
+    """A strategy that makes bets on a random selection of up to half the pockets on the wheel."""
+
+    def make_bet(
+        self,
+        balance: int,
+        min_bet: int,
+        max_bet: int,
+        pockets_num: int,
+        last: bool = False,
+    ) -> Bet:
         """
-        Simulates the bot playing a round of roulette using the basic strategy.
+        Make a bet on a random selection of up to half the pockets on the wheel.
 
-        Args:
-            croupier (Croupier): The croupier handling the roulette wheel.
+        Parameters
+        ----------
+        balance : int
+            The amount of money left.
+        min_bet : int
+            The minimum bet amount.
+        max_bet : int
+            The maximum bet amount.
+        pockets_num : int
+            The number of pockets on the roulette wheel.
+        last : bool, optional
+            True if the last bet won, default is False.
+
+        Returns
+        -------
+        Bet
+            A Bet object representing the bet to be placed.
         """
-        bet = self.place_bet()
-        if bet:
-            print(f"{self.name} bets {bet.amount} on the color {bet.choice}")
-            _, winning_color = croupier.spin_wheel()
-            if winning_color == bet.choice:
-                print(f"{self.name} won! Colour: {winning_color}")
-                self.update_balance(bet.amount * 2)
-            else:
-                print(f"{self.name} lost. Colour: {winning_color}")
-                self.update_balance(-bet.amount)
+        if balance < min_bet:
+            return Bet()
+
+        chips_num = min(balance // min_bet, pockets_num // 2, max_bet // min_bet)
+
+        bet_numbers = random.sample(range(pockets_num), chips_num)
+
+        bet_amount = [min_bet for _ in range(chips_num)]
+
+        return Bet(numbers=bet_numbers, amount=bet_amount, bet_type=BetTypes.Single)
 
 
-class OptimalStrategy(Bot):
-    """
-    The OptimalStrategy class represents a bot that uses an optimal betting strategy in the roulette game.
-    This strategy involves betting on a dozen (1-12, 13-24, 25-36).
+class BasicStrategy(Strategy):
+    """A basic strategy that makes bets on a randomly chosen color."""
 
-    Methods:
-        place_bet() -> Optional[Bet]: Places a bet on a dozen.
-        play(croupier: Croupier) -> None: Simulates the bot playing a round of roulette using the optimal strategy.
-    """
+    def __init__(self):
+        self._last_bet_amount: List[int] = []
+        self._last_color: ColorTypes
+        self._is_first = True
 
-    def place_bet(self) -> Optional[Bet]:
+    def make_bet(
+        self,
+        balance: int,
+        min_bet: int,
+        max_bet: int,
+        pockets_num: int,
+        last: bool = False,
+    ) -> Bet:
         """
-        Places a bet on a dozen.
+        Make a bet on a randomly chosen color.
 
-        Returns:
-            Optional[Bet]: The bet placed by the bot, or None if the bot has insufficient balance.
-        """
-        if self.balance <= 0:
-            return None
-        choice = random.choice([1, 2, 3])  # 1 - 1-12, 2 - 13-24, 3 - 25-36
-        amount = min(self.balance, 10)
-        return Bet(amount, "dozen", choice)
+        Parameters
+        ----------
+        balance : int
+            The amount of money left.
+        min_bet : int
+            The minimum bet amount.
+        max_bet : int
+            The maximum bet amount.
+        pockets_num : int
+            The number of pockets on the roulette wheel.
+        last : bool, optional
+            True if the last bet won, default is False.
 
-    def play(self, croupier: Croupier) -> None:
+        Returns
+        -------
+        Bet
+            A Bet object representing the bet to be placed.
         """
-        Simulates the bot playing a round of roulette using the optimal strategy.
+        if balance < min_bet:
+            return Bet()
 
-        Args:
-            croupier (Croupier): The croupier handling the roulette wheel.
+        bet_color = random.choice(list(ColorTypes))
+
+        bet_amount = [min_bet]
+
+        return Bet(color=bet_color, amount=bet_amount, bet_type=BetTypes.Color)
+
+
+class OptimalStrategy(Strategy):
+    """A strategy that makes bets on one of the dozens on the roulette wheel."""
+
+    def __init__(self):
+        self._dozen_number = 3
+
+    def make_bet(
+        self,
+        balance: int,
+        min_bet: int,
+        max_bet: int,
+        pockets_num: int,
+        last: bool = False,
+    ) -> Bet:
         """
-        bet = self.place_bet()
-        if bet:
-            print(f"{self.name} bets {bet.amount} on the dozen {bet.choice}")
-            winning_number, _ = croupier.spin_wheel()
-            if (
-                (bet.choice == 1 and 1 <= winning_number <= 12)
-                or (bet.choice == 2 and 13 <= winning_number <= 24)
-                or (bet.choice == 3 and 25 <= winning_number <= 36)
-            ):
-                print(f"{self.name} won on the number {winning_number}")
-                self.update_balance(bet.amount * 3)
-            else:
-                print(f"{self.name} lost. Result: {winning_number}")
-                self.update_balance(-bet.amount)
+        Make a bet on one of the dozens on the roulette wheel.
+
+        Parameters
+        ----------
+        balance : int
+            The amount of money left.
+        min_bet : int
+            The minimum bet amount.
+        max_bet : int
+            The maximum bet amount.
+        pockets_num : int
+            The number of pockets on the roulette wheel.
+        last : bool, optional
+            True if the last bet won, default is False.
+
+        Returns
+        -------
+        Bet
+            A Bet object representing the bet to be placed.
+        """
+        if balance < min_bet:
+            return Bet()
+
+        num_dozen = random.choice([i + 1 for i in range(self._dozen_number)])
+
+        numbers_bet = pockets_num // self._dozen_number
+
+        bet_numbers = [
+            i + 1 for i in range(numbers_bet * (num_dozen - 1), numbers_bet * num_dozen)
+        ]
+        bet_amount = [
+            min_bet * min(balance // min_bet, numbers_bet, max_bet // min_bet)
+        ]
+        return Bet(numbers=bet_numbers, amount=bet_amount, bet_type=BetTypes.Dozen)
