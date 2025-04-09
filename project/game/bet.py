@@ -9,9 +9,9 @@ class ColorTypes(Enum):
     Enumeration representing the possible colors of pockets on a roulette wheel.
 
     Attributes:
-        Black (str): Represents the color black.
-        Red (str): Represents the color red.
-        Green (str): Represents the color green.
+        Black : str
+        Red : str
+        Green : str
     """
 
     Black: str = "black"
@@ -24,9 +24,9 @@ class BetTypes(Enum):
     Enumeration representing the types of bets that can be placed in a roulette game.
 
     Attributes:
-        Single (int): Represents a bet on a single number, with a payout ratio of 36:1.
-        Color (int): Represents a bet on a color (red or black), with a payout ratio of 2:1.
-        Dozen (int): Represents a bet on a dozen numbers, with a payout ratio of 3:1.
+        Single : int
+        Color : int
+        Dozen : int
     """
 
     Single: int = 36
